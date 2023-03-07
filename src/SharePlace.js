@@ -1,5 +1,6 @@
 import {Modal} from './UI/Modal';
 import {Map} from './UI/Map';
+import { Location } from './UI/Utility/Location';
 
 class PlaceFinder {
     constructor() {
@@ -43,8 +44,16 @@ class PlaceFinder {
         })
     }
 
-    findAddressHandler() {
+    findAddressHandler(e) {
+        e.preventDefault();
+        const address = e.target.querySelector('input').value;
+        if(!address || address.trim().lenght === 0) {
+            alert('please add the valid address');
+            return;
+        }
 
+        const modal = new Modal('loading-modal-content', 'Loading the geolocations');
+        modal.show();
     }
 }
 
