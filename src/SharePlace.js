@@ -1,6 +1,6 @@
 import {Modal} from './UI/Modal';
 import {Map} from './UI/Map';
-import { Location } from './UI/Utility/Location';
+import { getCoordsFromAddress } from './UI/Utility/Location';
 
 class PlaceFinder {
     constructor() {
@@ -8,7 +8,7 @@ class PlaceFinder {
         const locateUserBtn = document.getElementById('locate-btn');
 
         locateUserBtn.addEventListener('click',  this.locateUserHandler.bind(this));
-        addressForm.addEventListener('click', this.findAddressHandler.bind(this));
+        addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
     }
 
     showMapHandler(coordinates) {
@@ -44,9 +44,10 @@ class PlaceFinder {
         })
     }
 
-    findAddressHandler(e) {
+    async findAddressHandler(e) {
         e.preventDefault();
         const address = e.target.querySelector('input').value;
+        console.log(address);
         if(!address || address.trim().lenght === 0) {
             alert('please add the valid address');
             return;
@@ -54,6 +55,15 @@ class PlaceFinder {
 
         const modal = new Modal('loading-modal-content', 'Loading the geolocations');
         modal.show();
+
+        try {
+            const coordinates = await getCoordsFromAddress(address);
+            this.showMapHandler(coordinates);
+        } catch(err) {
+            alert(err.message);
+        }
+
+        modal.hide();
     }
 }
 
