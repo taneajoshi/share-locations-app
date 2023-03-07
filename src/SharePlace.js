@@ -1,12 +1,22 @@
 import {Modal} from './UI/Modal';
+import {Map} from './UI/Map';
 
 class PlaceFinder {
     constructor() {
         const addressForm = document.querySelector('form');
         const locateUserBtn = document.getElementById('locate-btn');
 
-        locateUserBtn.addEventListener('click',  this.locateUserHandler);
-        addressForm.addEventListener('click', this.findAddressHandler);
+        locateUserBtn.addEventListener('click',  this.locateUserHandler.bind(this));
+        addressForm.addEventListener('click', this.findAddressHandler.bind(this));
+    }
+
+    showMapHandler(coordinates) {
+        //Condition to check that we dont add/render map twice (in case we get the user location/coordinates twice) but reuse the existing one.
+        if(this.map) {
+            this.map.render();
+        } else {
+            this.map = new Map(coordinates);
+        }
     }
 
     locateUserHandler() {
@@ -26,7 +36,7 @@ class PlaceFinder {
                 lng: successResult.coords.longitude,
             };
 
-            console.log(coordinates);
+            this.showMapHandler(coordinates);
         }, err => {
             modal.hide();
             alert('Opps.. We are unable to locate you. Please try entering the address manually.');
