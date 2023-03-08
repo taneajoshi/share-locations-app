@@ -10,7 +10,7 @@ class PlaceFinder {
 
         locateUserBtn.addEventListener('click', this.locateUserHandler.bind(this));
         addressForm.addEventListener('submit', this.findAddressHandler.bind(this));
-        // this.shareBtn.addEventListener('click', this.shareLocationHandler.bind(this));
+        this.shareBtn.addEventListener('click', this.sharePlaceHandler.bind(this));
     }
 
     showMapHandler(coordinates, address) {
@@ -72,6 +72,22 @@ class PlaceFinder {
         }
 
         modal.hide();
+    }
+
+    sharePlaceHandler() {
+        const sharedLinkInputElement = document.getElementById('share-link');
+        //Selecting the inout value if clipboard api is not supported by the browser
+        if(!navigator.clipboard) {
+            sharedLinkInputElement.select();
+            return;
+        }
+
+        navigator.clipboard.writeText(sharedLinkInputElement.value).then(()=>{
+            alert('copied');
+        }).catch(err =>{
+            console.log(err);
+            sharedLinkInputElement.select();
+        });
     }
 }
 
